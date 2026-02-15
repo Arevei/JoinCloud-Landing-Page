@@ -1,0 +1,194 @@
+Below is a **clean, copy-paste–ready Replit prompt** you can use to generate the **JoinCloud landing page** exactly in the direction we discussed.
+
+This is written as a **developer instruction prompt**, not marketing copy.
+
+---
+
+## Replit Prompt — JoinCloud Landing Page
+
+**Project Context**
+
+You are building the **JoinCloud landing page** for a personal cloud networking platform.
+JoinCloud lets users share files globally **directly from their own device**, without uploading to third-party cloud storage.
+
+This page is **marketing + download only**.
+There must be **NO web login, NO dashboard, NO authentication UI**.
+
+The goal is:
+
+* Explain the product clearly
+* Build trust
+* Drive macOS beta downloads
+
+---
+
+### Tech Requirements
+
+* Framework: **Next.js (App Router preferred)** or **React + Vite**
+* Styling: **Tailwind CSS**
+* Dark theme only
+* Fully responsive
+* Static page (no backend required)
+
+---
+
+### Design System (must be followed exactly)
+
+#### Colors
+
+```txt
+Background: #0A0A0F
+Surface/Card: #12121A
+Primary (CTA): #2FB7FF
+Text Primary: #FFFFFF
+Text Muted: #A1A1AA
+
+Status (define but do not heavily use):
+Success: #22C55E
+Warning: #F59E0B
+Error: #EF4444
+```
+
+#### Typography
+
+* Font: **Inter**
+* Headline: 48–56px, semibold
+* Section titles: 28–32px
+* Body text: 16–18px
+* Muted text: 14–16px
+
+---
+
+### Page Structure (Required Sections)
+
+#### 1. Header
+
+* Logo (JoinCloud)
+* Minimal navigation (Documentation optional)
+* Primary CTA button: **Download for macOS**
+* Transparent initially, solid surface on scroll
+
+---
+
+#### 2. Hero Section
+
+* Dark background with **subtle radial gradient glow** (blue/purple tint, low opacity)
+* Headline:
+
+  > Your personal cloud.
+  > Powered by your own device.
+* Subtext:
+
+  > Share files globally, directly from your system — without uploading to third-party storage.
+* Primary CTA:
+  **Download for macOS (Beta)**
+* Secondary muted text:
+
+  > Web access coming soon
+
+---
+
+#### 3. How It Works
+
+Three cards (responsive grid):
+
+1. Install JoinCloud on your Mac
+2. Select files or folders to share
+3. Share instantly with anyone, anywhere
+
+Cards:
+
+* Background: #12121A
+* Rounded corners
+* Subtle border or shadow
+
+---
+
+#### 4. Why JoinCloud
+
+List or grid explaining differentiation:
+
+* No cloud storage duplication
+* Files stay on your device
+* Direct, fast sharing
+* Secure encrypted connections
+* Full user control
+
+Use subtle blue accents, not icons overload.
+
+---
+
+#### 5. Security & Trust
+
+Short, calm section:
+
+* Emphasize privacy
+* No exaggerated crypto claims
+* No technical jargon
+
+---
+
+#### 6. Download Section
+
+* Repeat primary CTA
+* Show:
+
+  > macOS • v0.3.3 Beta
+* Mention “Beta” subtly using warning color if needed
+
+---
+
+#### 7. Footer
+
+* Surface background
+* Links:
+
+  * Privacy Policy
+  * Terms
+  * Support
+* No admin links
+* No login links
+
+---
+
+### UX & Motion Rules
+
+* No heavy animations
+* Subtle hover effects only
+* 150–200ms transitions
+* No autoplay effects
+
+---
+
+### Important Constraints (Do NOT violate)
+
+* ❌ No login/signup UI
+* ❌ No web dashboard
+* ❌ No screenshots of internal app
+* ❌ No device IDs or auth concepts
+* ❌ No promises of web access beyond “coming soon”
+
+This is an **app-first product**, not a SaaS dashboard.
+
+---
+
+### Output Expectations
+
+* Clean component structure
+* Reusable Button, Card, Section components
+* Well-organized Tailwind classes
+* Production-ready landing page
+
+---
+
+**Start by scaffolding the project and building the landing page UI according to the above instructions.**
+
+---
+
+If you want, next I can:
+
+* Convert this into a **Cursor prompt**
+* Provide a **Tailwind token config**
+* Review Replit’s output and refine it to production quality
+
+Just tell me the next step.
