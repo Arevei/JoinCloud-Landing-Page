@@ -695,14 +695,14 @@ function Footer() {
           </div>
           <nav className="flex flex-wrap items-center justify-center gap-6 text-sm">
             <a
-              href="#"
+              href="/privacy"
               className="text-muted-foreground hover:text-foreground transition-colors duration-150"
               data-testid="link-privacy"
             >
               Privacy Policy
             </a>
             <a
-              href="#"
+              href="/terms"
               className="text-muted-foreground hover:text-foreground transition-colors duration-150"
               data-testid="link-terms"
             >
