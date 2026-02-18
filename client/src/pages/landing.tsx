@@ -9,6 +9,8 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Download, Folder, Share2, Shield, Lock, Zap, HardDrive, Globe, Monitor, Send, CheckCircle, Clock, Sparkles, Link2, UserX, Wifi, Bell } from "lucide-react";
 import joincloudLogo from "/joincloud-logo.png";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -497,10 +499,19 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [profession, setProfession] = useState("");
+  const [phone, setPhone] = useState<string | undefined>();
   const { toast } = useToast();
 
   const waitlistMutation = useMutation({
-    mutationFn: async (data: { name: string; email: string; profession: string }) => {
+    mutationFn: async (data: { name: string; email: string; profession: string; phone?: string }) => {
+      const additionalDetails: Record<string, any> = {
+        profession: data.profession
+      };
+      
+      if (data.phone) {
+        additionalDetails.phone = data.phone;
+      }
+
       const payload = {
         name: data.name,
         email: {
@@ -508,9 +519,7 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
           additionalEmails: null
         },
         websiteSource: ["JOINCLOUD_IN"],
-        additionalDetails: {
-          profession: data.profession
-        }
+        additionalDetails
       };
 
       const response = await fetch("https://twenty.joincloud.in/rest/webformleads", {
@@ -535,6 +544,7 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
       setName("");
       setEmail("");
       setProfession("");
+      setPhone(undefined);
     },
     onError: () => {
       toast({
@@ -552,6 +562,7 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
       name: name.trim(),
       email: email.trim(),
       profession,
+      phone: phone || undefined,
     });
   };
 
@@ -619,6 +630,24 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
                     <SelectItem value="Other">Other</SelectItem>
                   </SelectContent>
                 </Select>
+              </div>
+
+              <div>
+                <label htmlFor="waitlist-phone" className="block text-sm font-medium text-foreground mb-2">
+                  Phone Number <span className="text-muted-foreground/50">(optional)</span>
+                </label>
+                <PhoneInput
+                  international
+                  countryCallingCodeEditable={false}
+                  defaultCountry="US"
+                  value={phone}
+                  onChange={setPhone}
+                  placeholder="Enter your phone number"
+                  className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  inputComponent={(props) => (
+                    <input {...props} className="w-full bg-transparent border-0 outline-none" />
+                  )}
+                />
               </div>
 
               <Button
