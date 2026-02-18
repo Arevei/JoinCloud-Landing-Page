@@ -10,7 +10,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { Download, Folder, Share2, Shield, Lock, Zap, HardDrive, Globe, Monitor, Send, CheckCircle, Clock, Sparkles, Link2, UserX, Wifi, Bell } from "lucide-react";
 import joincloudLogo from "/joincloud-logo.png";
 
-function Header() {
+function Header({ onWindowsClick }: { onWindowsClick: () => void }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -56,11 +56,11 @@ function Header() {
             Feedback
           </a>
         </nav>
-        <Button asChild data-testid="button-download-header">
-          <a href="https://github.com/vinay-kumar-shakyawar/joincloud/releases/tag/v0.3.1" target="_blank" rel="noopener noreferrer">
+        <Button asChild data-testid="button-download-header" onClick={onWindowsClick}>
+          <div className=" flex ">
             <Download className="w-4 h-4 mr-2" />
             Download Beta
-          </a>
+          </div>
         </Button>
       </div>
     </header>
@@ -90,11 +90,11 @@ function Hero({ onWindowsClick }: { onWindowsClick: () => void }) {
           Only the sender needs to install JoinCloud. Receivers access shared files through a browser, no installation required.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button size="lg" className="text-base px-8" asChild data-testid="button-download-macos">
-            <a href="https://github.com/vinay-kumar-shakyawar/joincloud/releases/tag/v0.3.1" target="_blank" rel="noopener noreferrer">
+        <Button size="lg" className="text-base px-10" onClick={onWindowsClick}  data-testid="button-download-cta-macos">
+            <div className="flex">
               <Download className="w-5 h-5 mr-2" />
               Download for macOS
-            </a>
+            </div>
           </Button>
           <Button
             size="lg"
@@ -651,11 +651,11 @@ function DownloadSection({ onWindowsClick }: { onWindowsClick: () => void }) {
           Download JoinCloud and start sharing files directly from your device. Only you need to install it, receivers just use a browser link.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-          <Button size="lg" className="text-base px-10" asChild data-testid="button-download-cta-macos">
-            <a href="https://github.com/vinay-kumar-shakyawar/joincloud/releases/tag/v0.3.1" target="_blank" rel="noopener noreferrer">
+          <Button size="lg" className="text-base px-10" onClick={onWindowsClick}  data-testid="button-download-cta-macos">
+            <div className="flex">
               <Download className="w-5 h-5 mr-2" />
               Download for macOS
-            </a>
+            </div>
           </Button>
           <Button
             size="lg"
@@ -694,15 +694,15 @@ function Footer() {
             <span className="text-lg font-semibold text-foreground">JoinCloud</span>
           </div>
           <nav className="flex flex-wrap items-center justify-center gap-6 text-sm">
-            <a
-              href="#"
+          <a
+              href="/privacy"
               className="text-muted-foreground hover:text-foreground transition-colors duration-150"
               data-testid="link-privacy"
             >
               Privacy Policy
             </a>
             <a
-              href="#"
+              href="/terms"
               className="text-muted-foreground hover:text-foreground transition-colors duration-150"
               data-testid="link-terms"
             >
@@ -741,7 +741,7 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header onWindowsClick={handleWindowsClick}/>
       <main>
         <Hero onWindowsClick={handleWindowsClick} />
         <CoreBenefits />

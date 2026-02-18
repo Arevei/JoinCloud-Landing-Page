@@ -11,22 +11,7 @@ const __root = typeof import.meta.dirname !== "undefined"
 
 export default defineConfig({
   plugins: [
-    react(),
-    // Only use Replit overlay in development on Replit (skip on Vercel/CI)
-    ...(process.env.NODE_ENV !== "production" && process.env.REPL_ID
-      ? [runtimeErrorOverlay()]
-      : []),
-    ...(process.env.NODE_ENV !== "production" &&
-    process.env.REPL_ID !== undefined
-      ? [
-          await import("@replit/vite-plugin-cartographer").then((m) =>
-            m.cartographer(),
-          ),
-          await import("@replit/vite-plugin-dev-banner").then((m) =>
-            m.devBanner(),
-          ),
-        ]
-      : []),
+    react()
   ],
   resolve: {
     alias: {
