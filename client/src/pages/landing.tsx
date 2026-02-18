@@ -9,7 +9,8 @@ import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Download, Folder, Share2, Shield, Lock, Zap, HardDrive, Globe, Monitor, Send, CheckCircle, Clock, Sparkles, Link2, UserX, Wifi, Bell } from "lucide-react";
 import joincloudLogo from "/joincloud-logo.png";
-
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 function Header({ onWindowsClick }: { onWindowsClick: () => void }) {
   const [scrolled, setScrolled] = useState(false);
 
@@ -498,12 +499,41 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [profession, setProfession] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState<string | undefined>();
   const { toast } = useToast();
 
   const waitlistMutation = useMutation({
     mutationFn: async (data: { name: string; email: string; profession: string; phone?: string }) => {
-      const response = await apiRequest("POST", "/api/waitlist", data);
+      const additionalDetails: Record<string, any> = {
+        profession: data.profession
+      };
+      
+      if (data.phone) {
+        additionalDetails.phone = data.phone;
+      }
+
+      const payload = {
+        name: data.name,
+        email: {
+          primaryEmail: data.email,
+          additionalEmails: null
+        },
+        websiteSource: ["JOINCLOUD_IN"],
+        additionalDetails
+      };
+
+      const response = await fetch("https://twenty.joincloud.in/rest/webformleads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${import.meta.env.VITE_TWENTY_API_TOKEN}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit form");
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -514,7 +544,7 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
       setName("");
       setEmail("");
       setProfession("");
-      setPhone("");
+      setPhone(undefined);
     },
     onError: () => {
       toast({
@@ -532,7 +562,7 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
       name: name.trim(),
       email: email.trim(),
       profession,
-      phone: phone.trim() || undefined,
+      phone: phone || undefined,
     });
   };
 
@@ -588,11 +618,11 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
                 <label htmlFor="waitlist-profession" className="block text-sm font-medium text-foreground mb-2">
                   Profession <span className="text-primary">*</span>
                 </label>
-                <Select value={profession} onValueChange={setProfession}>
+                <Select value={profession} onValueChange={setProfession} >
                   <SelectTrigger data-testid="select-waitlist-profession">
                     <SelectValue placeholder="Select your profession" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-background">
                     <SelectItem value="Student">Student</SelectItem>
                     <SelectItem value="Creator">Creator</SelectItem>
                     <SelectItem value="Working Professional">Working Professional</SelectItem>
@@ -602,19 +632,7 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
                 </Select>
               </div>
 
-              <div>
-                <label htmlFor="waitlist-phone" className="block text-sm font-medium text-muted-foreground mb-2">
-                  Phone Number <span className="text-muted-foreground/50">(optional)</span>
-                </label>
-                <Input
-                  id="waitlist-phone"
-                  type="tel"
-                  placeholder="Your phone number"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  data-testid="input-waitlist-phone"
-                />
-              </div>
+             
 
               <Button
                 type="submit"
@@ -639,6 +657,7 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
     </section>
   );
 }
+
 
 function DownloadSection({ onWindowsClick }: { onWindowsClick: () => void }) {
   return (
