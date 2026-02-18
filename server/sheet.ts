@@ -5,11 +5,11 @@
  */
 
 function getSheetFeedbackUrl(): string | undefined {
-  return process.env.SHEET_FEEDBACK_URL?.trim() || undefined;
+  return process.env.SHEET_FEEDBACK_URL?.trim() || "https://sheetdb.io/api/v1/rwugbf3hf5pzs";
 }
 
 function getSheetWaitlistUrl(): string | undefined {
-  return process.env.SHEET_WAITLIST_URL?.trim() || undefined;
+  return process.env.SHEET_WAITLIST_URL?.trim() || "https://sheetdb.io/api/v1/rwugbf3hf5pzs";
 }
 
 /**
