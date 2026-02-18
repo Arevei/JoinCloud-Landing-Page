@@ -23,9 +23,8 @@ function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-        scrolled ? "bg-card/95 backdrop-blur-md border-b border-border" : "bg-transparent"
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${scrolled ? "bg-card/95 backdrop-blur-md border-b border-border" : "bg-transparent"
+        }`}
       data-testid="header"
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
