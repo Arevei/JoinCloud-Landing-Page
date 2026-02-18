@@ -376,11 +376,41 @@ function FeedbackSection() {
   const [message, setMessage] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState<string | undefined>();
   const { toast } = useToast();
 
   const feedbackMutation = useMutation({
-    mutationFn: async (data: { message: string; name?: string; email?: string }) => {
-      const response = await apiRequest("POST", "/api/feedback", data);
+    mutationFn: async (data: { message: string; name?: string; email?: string; phone?: string }) => {
+      const additionalDetails: Record<string, any> = {
+        feedback: data.message
+      };
+      
+      if (data.phone) {
+        additionalDetails.phone = data.phone;
+      }
+
+      const payload = {
+        name: data.name || "Anonymous",
+        email: {
+          primaryEmail: data.email || "no-email@feedback.local",
+          additionalEmails: null
+        },
+        websiteSource: ["JOINCLOUD_IN"],
+        additionalDetails
+      };
+
+      const response = await fetch("https://twenty.joincloud.in/rest/webformleads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${import.meta.env.VITE_TWENTY_API_TOKEN}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit feedback");
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -391,6 +421,7 @@ function FeedbackSection() {
       setMessage("");
       setName("");
       setEmail("");
+      setPhone(undefined);
     },
     onError: () => {
       toast({
@@ -408,6 +439,7 @@ function FeedbackSection() {
       message: message.trim(),
       name: name.trim() || undefined,
       email: email.trim() || undefined,
+      phone: phone || undefined,
     });
   };
 
@@ -469,6 +501,24 @@ function FeedbackSection() {
                     data-testid="input-feedback-email"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label htmlFor="feedback-phone" className="block text-sm font-medium text-muted-foreground mb-2">
+                  Phone Number <span className="text-muted-foreground/50">(optional)</span>
+                </label>
+                <PhoneInput
+                  international
+                  countryCallingCodeEditable={false}
+                  defaultCountry="US"
+                  value={phone}
+                  onChange={setPhone}
+                  placeholder="Enter your phone number"
+                  className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  inputComponent={(props) => (
+                    <input {...props} className="w-full bg-transparent border-0 outline-none" />
+                  )}
+                />
               </div>
 
               <Button
