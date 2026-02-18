@@ -498,12 +498,34 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [profession, setProfession] = useState("");
-  const [phone, setPhone] = useState("");
   const { toast } = useToast();
 
   const waitlistMutation = useMutation({
-    mutationFn: async (data: { name: string; email: string; profession: string; phone?: string }) => {
-      const response = await apiRequest("POST", "/api/waitlist", data);
+    mutationFn: async (data: { name: string; email: string; profession: string }) => {
+      const payload = {
+        name: data.name,
+        email: {
+          primaryEmail: data.email,
+          additionalEmails: null
+        },
+        websiteSource: ["JOINCLOUD_IN"],
+        additionalDetails: {
+          profession: data.profession
+        }
+      };
+
+      const response = await fetch("https://twenty.joincloud.in/rest/webformleads", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${import.meta.env.VITE_TWENTY_API_TOKEN}`
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to submit form");
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -514,7 +536,6 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
       setName("");
       setEmail("");
       setProfession("");
-      setPhone("");
     },
     onError: () => {
       toast({
@@ -532,7 +553,6 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
       name: name.trim(),
       email: email.trim(),
       profession,
-      phone: phone.trim() || undefined,
     });
   };
 
@@ -600,20 +620,6 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
                     <SelectItem value="Other">Other</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-
-              <div>
-                <label htmlFor="waitlist-phone" className="block text-sm font-medium text-muted-foreground mb-2">
-                  Phone Number <span className="text-muted-foreground/50">(optional)</span>
-                </label>
-                <Input
-                  id="waitlist-phone"
-                  type="tel"
-                  placeholder="Your phone number"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  data-testid="input-waitlist-phone"
-                />
               </div>
 
               <Button
