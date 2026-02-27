@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Download, Folder, Share2, Shield, Lock, Zap, HardDrive, Globe, Monitor, Send, CheckCircle, Clock, Sparkles, Link2, UserX, Wifi, Bell, Users, Smartphone, QrCode, FolderOpen, Eye } from "lucide-react";
+import { Download, Folder, Share2, Shield, Lock, Zap, HardDrive, Globe, Monitor, Send, CheckCircle, Clock, Sparkles, Link2, UserX, Wifi, Bell, Users, Smartphone, QrCode, FolderOpen, Eye, Mail, MessageCircle, Headphones } from "lucide-react";
 import joincloudLogo from "/joincloud-logo.png";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -941,6 +941,51 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
   );
 }
 
+function SupportSection() {
+  return (
+    <section className="py-24 px-6 bg-gradient-to-b from-background to-[#00080A]">
+      <div className="max-w-4xl mx-auto text-center">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-6">
+          <Headphones className="w-8 h-8 text-primary" />
+        </div>
+        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          Need Help?
+        </h2>
+        <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
+          If you face any issues during installation or runtime, we're here to help. Reach out to us through any of the channels below.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+          <a
+            href="mailto:vinay@arevei.com"
+            className="flex items-center gap-3 px-6 py-4 rounded-xl bg-card border border-border hover:border-primary/50 hover:bg-card/80 transition-all duration-300 group"
+          >
+            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors">
+              <Mail className="w-6 h-6 text-primary" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm text-muted-foreground">Email</p>
+              <p className="text-foreground font-medium">vinay@arevei.com</p>
+            </div>
+          </a>
+          <a
+            href="https://wa.me/919625440855"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 px-6 py-4 rounded-xl bg-card border border-border hover:border-green-500/50 hover:bg-card/80 transition-all duration-300 group"
+          >
+            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-green-500/10 group-hover:bg-green-500/20 transition-colors">
+              <MessageCircle className="w-6 h-6 text-green-500" />
+            </div>
+            <div className="text-left">
+              <p className="text-sm text-muted-foreground">WhatsApp</p>
+              <p className="text-foreground font-medium">+91 9625440855</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function DownloadSection({ onMacClick, onWindowsClick }: { onMacClick: () => void; onWindowsClick: () => void }) {
   return (
@@ -1058,6 +1103,7 @@ export default function Landing() {
         <DesignPhilosophy />
         <FeedbackSection />
         <WaitlistSection waitlistRef={waitlistRef} />
+        <SupportSection />
         <DownloadSection onMacClick={handleMacClick} onWindowsClick={handleWindowsClick} />
       </main>
       <Footer />
