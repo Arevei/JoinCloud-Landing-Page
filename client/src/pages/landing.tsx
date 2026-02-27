@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,10 +7,145 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Download, Folder, Share2, Shield, Lock, Zap, HardDrive, Globe, Monitor, Send, CheckCircle, Clock, Sparkles, Link2, UserX, Wifi, Bell } from "lucide-react";
+import { Download, Folder, Share2, Shield, Lock, Zap, HardDrive, Globe, Monitor, Send, CheckCircle, Clock, Sparkles, Link2, UserX, Wifi, Bell, Users, Smartphone, QrCode, FolderOpen, Eye } from "lucide-react";
 import joincloudLogo from "/joincloud-logo.png";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+
+interface SpeedParticle {
+  id: number;
+  x: number;
+  y: number;
+  speed: number;
+  opacity: number;
+  length: number;
+}
+
+function MouseSpeedEffect() {
+  const [particles, setParticles] = useState<SpeedParticle[]>([]);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [isMoving, setIsMoving] = useState(false);
+  const particleIdRef = useRef(0);
+  const lastMousePos = useRef({ x: 0, y: 0 });
+  const moveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    const newX = e.clientX;
+    const newY = e.clientY;
+    
+    const deltaX = newX - lastMousePos.current.x;
+    const deltaY = newY - lastMousePos.current.y;
+    const velocity = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    
+    setMousePos({ x: newX, y: newY });
+    lastMousePos.current = { x: newX, y: newY };
+    
+    setIsMoving(true);
+    
+    if (moveTimeoutRef.current) {
+      clearTimeout(moveTimeoutRef.current);
+    }
+    moveTimeoutRef.current = setTimeout(() => setIsMoving(false), 100);
+    
+    if (velocity > 3) {
+      const newParticles: SpeedParticle[] = [];
+      const particleCount = Math.min(Math.floor(velocity / 8), 4);
+      
+      for (let i = 0; i < particleCount; i++) {
+        newParticles.push({
+          id: particleIdRef.current++,
+          x: newX + (Math.random() - 0.5) * 30,
+          y: newY - 20 - Math.random() * 15,
+          speed: Math.round(50 + Math.random() * 450),
+          opacity: 0.6 + Math.random() * 0.4,
+          length: 20 + Math.random() * 30,
+        });
+      }
+      
+      setParticles(prev => [...prev.slice(-20), ...newParticles]);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      if (moveTimeoutRef.current) {
+        clearTimeout(moveTimeoutRef.current);
+      }
+    };
+  }, [handleMouseMove]);
+
+  useEffect(() => {
+    if (particles.length === 0) return;
+    
+    const cleanup = setTimeout(() => {
+      setParticles(prev => prev.slice(1));
+    }, 400);
+    
+    return () => clearTimeout(cleanup);
+  }, [particles]);
+
+  return (
+    <div className="fixed inset-0 pointer-events-none z-[999]">
+      {isMoving && (
+        <div
+          className="absolute flex items-center gap-1 animate-pulse"
+          style={{
+            left: mousePos.x - 25,
+            top: mousePos.y - 35,
+            transition: "left 0.05s ease-out, top 0.05s ease-out",
+          }}
+        >
+          <div className="flex flex-col items-center">
+            <div className="flex items-center gap-0.5">
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="text-primary"
+              >
+                <path
+                  d="M12 4L12 20M12 20L6 14M12 20L18 14"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              <span className="text-[10px] font-bold text-primary tabular-nums">
+                {Math.round(100 + Math.random() * 400)} MB/s
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {particles.map((particle) => (
+        <div
+          key={particle.id}
+          className="absolute"
+          style={{
+            left: particle.x,
+            top: particle.y,
+            opacity: particle.opacity,
+            animation: "speedFadeUp 0.4s ease-out forwards",
+          }}
+        >
+          <div
+            className="bg-gradient-to-b from-primary to-transparent rounded-full"
+            style={{
+              width: "2px",
+              height: `${particle.length}px`,
+              boxShadow: "0 0 6px rgba(47, 183, 255, 0.6)",
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
 function Header({ onWindowsClick }: { onWindowsClick: () => void }) {
   const [scrolled, setScrolled] = useState(false);
 
@@ -25,43 +160,41 @@ function Header({ onWindowsClick }: { onWindowsClick: () => void }) {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-        scrolled ? "bg-card/95 backdrop-blur-md border-b border-border" : "bg-transparent"
+        scrolled ? "bg-[#000A0D]/95 backdrop-blur-md border-b border-[#001C25]" : "bg-transparent"
       }`}
       data-testid="header"
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <img src={joincloudLogo} alt="JoinCloud" className="h-8 w-auto object-contain" />
-          <span className="text-xl font-semibold text-foreground">JoinCloud</span>
+          <span className="text-xl font-bold text-foreground">JoinCloud</span>
         </div>
-        <nav className="hidden md:flex items-center gap-6">
+        <nav className="hidden md:flex items-center gap-8">
           <a
             href="#features"
-            className="text-muted-foreground hover:text-foreground transition-colors duration-150"
+            className="text-muted-foreground hover:text-primary transition-colors duration-150 text-sm font-medium"
             data-testid="link-features"
           >
             Features
           </a>
           <a
             href="#how-it-works"
-            className="text-muted-foreground hover:text-foreground transition-colors duration-150"
+            className="text-muted-foreground hover:text-primary transition-colors duration-150 text-sm font-medium"
             data-testid="link-how-it-works"
           >
             How It Works
           </a>
           <a
             href="#feedback"
-            className="text-muted-foreground hover:text-foreground transition-colors duration-150"
+            className="text-muted-foreground hover:text-primary transition-colors duration-150 text-sm font-medium"
             data-testid="link-feedback"
           >
             Feedback
           </a>
         </nav>
-        <Button asChild data-testid="button-download-header" onClick={onWindowsClick}>
-          <div className=" flex ">
-            <Download className="w-4 h-4 mr-2" />
-            Download Beta
-          </div>
+        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" data-testid="button-download-header" onClick={onWindowsClick}>
+          <Download className="w-4 h-4 mr-2" />
+          Download Beta
         </Button>
       </div>
     </header>
@@ -71,28 +204,28 @@ function Header({ onWindowsClick }: { onWindowsClick: () => void }) {
 function Hero({ onWindowsClick }: { onWindowsClick: () => void }) {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 pb-16 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-radial from-primary/10 via-transparent to-transparent opacity-50" />
+      <div className="absolute inset-0 bg-gradient-radial from-primary/8 via-transparent to-transparent opacity-60" />
       <div
         className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full"
         style={{
-          background: "radial-gradient(circle, rgba(47, 183, 255, 0.15) 0%, rgba(139, 92, 246, 0.08) 40%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(47, 183, 255, 0.12) 0%, rgba(47, 183, 255, 0.04) 40%, transparent 70%)",
         }}
       />
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-semibold text-foreground leading-tight mb-6">
-          Share Files Directly From Your System Using a Link.
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6 tracking-tight">
+          Your Personal Cloud.
           <br />
-          <span className="text-primary">No Third-Party Storage Needed.</span>
+          <span className="text-primary text-glow">Share Files at LAN Speed.</span>
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
-          A Personal Cloud Network, Powered by your own device.
+          Turn your device into a high speed file sharing hub. Create Team Spaces, preview 4K content instantly, and collaborate without cloud uploads.
         </p>
-        <p className="text-base text-muted-foreground/80 max-w-xl mx-auto mb-10">
-          Only the sender needs to install JoinCloud. Receivers access shared files through a browser, no installation required.
+        <p className="text-base text-muted-foreground/70 max-w-xl mx-auto mb-10">
+          Only you need JoinCloud installed. Share via link or QR code. Recipients preview or download directly from their browser.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <Button size="lg" className="text-base px-10" onClick={onWindowsClick}  data-testid="button-download-cta-macos">
-            <div className="flex">
+          <Button size="lg" className="text-base px-10 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" onClick={onWindowsClick} data-testid="button-download-cta-macos">
+            <div className="flex items-center">
               <Download className="w-5 h-5 mr-2" />
               Download for macOS
             </div>
@@ -100,7 +233,7 @@ function Hero({ onWindowsClick }: { onWindowsClick: () => void }) {
           <Button
             size="lg"
             variant="outline"
-            className="text-base px-8"
+            className="text-base px-8 border-border hover:bg-card hover:border-primary/50 text-foreground"
             data-testid="button-download-windows"
             onClick={onWindowsClick}
           >
@@ -108,11 +241,29 @@ function Hero({ onWindowsClick }: { onWindowsClick: () => void }) {
             Download for Windows
           </Button>
         </div>
-        <p className="mt-4 text-sm text-muted-foreground">Fast. Secure. In your control.</p>
-        <div className="mt-8 p-4 rounded-md bg-primary/10 border border-primary/20 max-w-md mx-auto">
+        <p className="mt-4 text-sm text-muted-foreground">Fast. Private. Easy to use.</p>
+        <div className="mt-8 p-4 rounded-xl bg-primary/10 border border-primary/30 max-w-md mx-auto glow-primary">
           <div className="flex items-center justify-center gap-2 text-primary">
             <Sparkles className="w-5 h-5" />
-            <span className="font-medium">First 1,000 beta users get 1 year free access to all paid features!</span>
+            <span className="font-semibold">First 1,000 beta users get free access to all future updates!</span>
+          </div>
+        </div>
+
+        {/* App Screenshot with fade effect */}
+        <div className="mt-16 relative max-w-5xl mx-auto">
+          <div className="relative rounded-xl overflow-hidden border border-[#001C25] shadow-2xl">
+            <img 
+              src="/app-screenshot.png" 
+              alt="JoinCloud Application Interface" 
+              className="w-full h-auto"
+            />
+            {/* Bottom fade overlay */}
+            <div 
+              className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
+              style={{
+                background: "linear-gradient(to bottom, transparent 0%, #000405 100%)"
+              }}
+            />
           </div>
         </div>
       </div>
@@ -124,18 +275,18 @@ function CoreBenefits() {
   const benefits = [
     {
       icon: Zap,
-      title: "Fast",
-      description: "Files are transferred directly without cloud uploads. No middleman slowing you down.",
+      title: "Lightning Fast",
+      description: "Direct LAN transfers at maximum speed. No uploads, no waiting. Share files instantly.",
     },
     {
       icon: Shield,
-      title: "Secure",
-      description: "Files remain on your system and are shared only when you allow it.",
+      title: "Completely Private",
+      description: "Your files never touch third party servers. Everything stays on your device.",
     },
     {
       icon: HardDrive,
-      title: "Full Control",
-      description: "You decide what to share, when to share, and when to stop sharing.",
+      title: "Total Control",
+      description: "Manage your files, choose what to share, and revoke access anytime.",
     },
   ];
 
@@ -143,21 +294,21 @@ function CoreBenefits() {
     <section className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             What is JoinCloud?
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            JoinCloud turns your system into a personal cloud node. Instead of uploading files to third-party cloud services, share files directly from your machine using a generated link.
+            JoinCloud transforms your device into a personal cloud. Share files at full LAN speed, collaborate with your team, and preview high resolution content directly in the browser. No uploads. No waiting.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
           {benefits.map((benefit, index) => (
-            <Card key={index} className="bg-card border-border hover-elevate transition-all duration-200" data-testid={`benefit-${index + 1}`}>
+            <Card key={index} className="bg-[#00080A] border-[#001C25] hover:border-primary/30 transition-all duration-200" data-testid={`benefit-${index + 1}`}>
               <CardContent className="p-8 text-center">
-                <div className="w-14 h-14 rounded-md bg-primary/10 flex items-center justify-center mb-6 mx-auto">
+                <div className="w-14 h-14 rounded-xl bg-primary/15 border border-primary/20 flex items-center justify-center mb-6 mx-auto">
                   <benefit.icon className="w-7 h-7 text-primary" />
                 </div>
-                <h3 className="text-xl font-semibold text-foreground mb-3">{benefit.title}</h3>
+                <h3 className="text-xl font-bold text-foreground mb-3">{benefit.title}</h3>
                 <p className="text-muted-foreground">{benefit.description}</p>
               </CardContent>
             </Card>
@@ -171,34 +322,49 @@ function CoreBenefits() {
 function Features() {
   const availableFeatures = [
     {
-      icon: Download,
-      title: "Sender-Only Installation",
-      description: "Only the person sharing files needs JoinCloud installed. Receivers can download files using a browser link.",
+      icon: Users,
+      title: "Team Space Collaboration",
+      description: "Create a shared workspace with nearby JoinCloud users. Share file links instantly and collaborate in real time with your team.",
     },
     {
-      icon: HardDrive,
-      title: "Local Cloud Creation",
-      description: "Install JoinCloud on the system you want to use as the cloud. Your system acts as the file host.",
+      icon: Eye,
+      title: "4K Preview Without Download",
+      description: "Share high resolution files up to 4K and let recipients preview them directly in their browser. No download required.",
+    },
+    {
+      icon: Smartphone,
+      title: "Multi Device Access",
+      description: "Open your cloud on any device. Access your files from smartphones, tablets, laptops, or any browser connected to your network.",
+    },
+    {
+      icon: FolderOpen,
+      title: "Built In File Manager",
+      description: "Organize, upload, and manage all your files directly within JoinCloud. Keep your cloud storage clean and structured.",
+    },
+    {
+      icon: QrCode,
+      title: "QR Code Sharing",
+      description: "Generate QR codes for instant access to files or your entire cloud. Perfect for quick sharing with nearby devices.",
     },
     {
       icon: Link2,
-      title: "Link-Based File Sharing",
-      description: "Generate a share link for any file or folder. Copy the full link to access files, or copy the host link (e.g. https://0.0.0.0:8080) to access the cloud from a different device on the same network.",
+      title: "One Click Link Sharing",
+      description: "Generate shareable links for any file or folder. Recipients can view or download instantly through their browser.",
     },
     {
       icon: UserX,
-      title: "No Signup or Account Required",
-      description: "No login, no user binding. Install only if you want to share files from your own system.",
+      title: "No Signup Required",
+      description: "Download and start using immediately. Free trial with no limits and no credit card required.",
     },
     {
       icon: Wifi,
-      title: "Local Network Optimized",
-      description: "Designed for same-network usage. Works even when internet connectivity is limited or unavailable.",
+      title: "High Speed LAN Transfers",
+      description: "Optimized for local network performance. Transfer large files at maximum speed without internet dependency.",
     },
     {
       icon: Lock,
-      title: "Secure Transfers",
-      description: "Files remain on your system and are only served when you explicitly share them.",
+      title: "Private and Secure",
+      description: "Your files never leave your device. Share only what you choose, when you choose, with complete control.",
     },
   ];
 
@@ -206,44 +372,44 @@ function Features() {
     {
       icon: Globe,
       title: "Global Sharing",
-      description: "Share files with anyone, anywhere in the world, not just on your local network.",
+      description: "Share files with anyone, anywhere in the world. Access your cloud beyond your local network.",
     },
     {
       icon: Monitor,
-      title: "Web-Based Access",
-      description: "Remotely control your personal cloud from any browser. Access your files from anywhere.",
+      title: "Remote Cloud Access",
+      description: "Control your personal cloud from any browser, anywhere. Full access to your files from any location.",
     },
   ];
 
   return (
-    <section id="features" className="py-24 px-6 bg-card/50">
+    <section id="features" className="py-24 px-6 bg-[#00080A]">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
-            v0.3.1 Features
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            v0.3.4 Features
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Everything you need to share files securely and efficiently
+            Powerful tools for seamless file sharing and team collaboration
           </p>
         </div>
 
         <div className="mb-16">
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 text-green-500" />
+            <div className="w-8 h-8 rounded-full bg-[#22C55E]/20 border border-[#22C55E]/30 flex items-center justify-center">
+              <CheckCircle className="w-5 h-5 text-[#22C55E]" />
             </div>
-            <h3 className="text-2xl font-semibold text-foreground">Available Now</h3>
+            <h3 className="text-2xl font-bold text-foreground">Available Now</h3>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {availableFeatures.map((feature, index) => (
-              <Card key={index} className="bg-card border-border hover-elevate transition-all duration-200" data-testid={`feature-available-${index + 1}`}>
+              <Card key={index} className="bg-[#000405] border-[#001C25] hover:border-primary/30 transition-all duration-200" data-testid={`feature-available-${index + 1}`}>
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-md bg-primary/10 flex items-center justify-center shrink-0">
+                    <div className="w-12 h-12 rounded-xl bg-primary/15 border border-primary/20 flex items-center justify-center shrink-0">
                       <feature.icon className="w-6 h-6 text-primary" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-medium text-foreground mb-2">{feature.title}</h4>
+                      <h4 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h4>
                       <p className="text-muted-foreground text-sm">{feature.description}</p>
                     </div>
                   </div>
@@ -255,21 +421,21 @@ function Features() {
 
         <div>
           <div className="flex items-center gap-3 mb-8">
-            <div className="w-8 h-8 rounded-full bg-amber-500/20 flex items-center justify-center">
-              <Clock className="w-5 h-5 text-amber-500" />
+            <div className="w-8 h-8 rounded-full bg-[#F59E0B]/20 border border-[#F59E0B]/30 flex items-center justify-center">
+              <Clock className="w-5 h-5 text-[#F59E0B]" />
             </div>
-            <h3 className="text-2xl font-semibold text-foreground">Coming Soon</h3>
+            <h3 className="text-2xl font-bold text-foreground">Coming Soon</h3>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             {comingSoonFeatures.map((feature, index) => (
-              <Card key={index} className="bg-card border-border border-dashed opacity-80" data-testid={`feature-coming-${index + 1}`}>
+              <Card key={index} className="bg-[#000405] border-[#001C25] border-dashed opacity-80" data-testid={`feature-coming-${index + 1}`}>
                 <CardContent className="p-6">
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-md bg-amber-500/10 flex items-center justify-center shrink-0">
-                      <feature.icon className="w-6 h-6 text-amber-500" />
+                    <div className="w-12 h-12 rounded-xl bg-[#F59E0B]/15 border border-[#F59E0B]/20 flex items-center justify-center shrink-0">
+                      <feature.icon className="w-6 h-6 text-[#F59E0B]" />
                     </div>
                     <div>
-                      <h4 className="text-lg font-medium text-foreground mb-2">{feature.title}</h4>
+                      <h4 className="text-lg font-semibold text-foreground mb-2">{feature.title}</h4>
                       <p className="text-muted-foreground text-sm">{feature.description}</p>
                     </div>
                   </div>
@@ -283,32 +449,113 @@ function Features() {
   );
 }
 
+function AppShowcase() {
+  const showcaseItems = [
+    {
+      image: "/screenshot-devices.png",
+      title: "Device Management",
+      subtitle: "Control Access to Your Cloud",
+      description: "Approve and manage devices that connect to your JoinCloud. See connection history, revoke access instantly, and keep your files secure with complete visibility over who can access your cloud.",
+    },
+    {
+      image: "/screenshot-teams.png",
+      title: "Team Spaces",
+      subtitle: "Collaborate in Real Time",
+      description: "Create dedicated spaces for your team. Share files, send messages, and collaborate instantly with peers on your local network. Perfect for offices, studios, and creative teams.",
+    },
+    {
+      image: "/screenshot-shares.png",
+      title: "Link Sharing",
+      subtitle: "Share with One Click",
+      description: "Generate shareable links for any file or folder. Copy the link, scan the QR code, or share directly. Recipients can preview and download without installing anything.",
+    },
+    {
+      image: "/screenshot-network.png",
+      title: "Network Discovery",
+      subtitle: "Connect Seamlessly",
+      description: "Automatically discover nearby JoinCloud users on your network. Connect manually via IP address or let mDNS find peers for you. See all connected devices at a glance.",
+    },
+  ];
+
+  return (
+    <section className="py-24 px-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            See JoinCloud in Action
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            A powerful yet intuitive interface designed for seamless file sharing and collaboration.
+          </p>
+        </div>
+        
+        <div className="space-y-24">
+          {showcaseItems.map((item, index) => (
+            <div 
+              key={index}
+              className={`flex flex-col ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-center gap-8 lg:gap-16`}
+            >
+              <div className="flex-1 w-full">
+                <div className="relative rounded-xl overflow-hidden border border-[#001C25] shadow-2xl">
+                  <img 
+                    src={item.image} 
+                    alt={item.title}
+                    className="w-full h-auto"
+                  />
+                  <div 
+                    className="absolute inset-0 pointer-events-none"
+                    style={{
+                      background: "linear-gradient(135deg, rgba(47, 183, 255, 0.05) 0%, transparent 50%)"
+                    }}
+                  />
+                </div>
+              </div>
+              
+              <div className="flex-1 text-center lg:text-left">
+                <span className="text-primary text-sm font-semibold tracking-wider uppercase mb-2 block">
+                  {item.subtitle}
+                </span>
+                <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">
+                  {item.title}
+                </h3>
+                <p className="text-muted-foreground text-lg leading-relaxed">
+                  {item.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function HowItWorks() {
   const steps = [
     {
       icon: Download,
-      title: "Install and start JoinCloud",
-      description: "Download and install on your Mac or Windows PC. Only the sender needs the app.",
+      title: "Install JoinCloud",
+      description: "Download and launch in seconds. Only you need the app installed.",
     },
     {
       icon: Folder,
-      title: "Select a file or folder to share",
-      description: "Choose what you want to share. Your files stay exactly where they are on your system.",
+      title: "Choose Your Files",
+      description: "Select any file or folder. Your data stays on your device.",
     },
     {
       icon: Link2,
-      title: "JoinCloud generates a share link",
-      description: "A unique link is created for your selected files. No upload needed.",
+      title: "Get Your Link",
+      description: "Instantly generate a shareable link or QR code.",
     },
     {
       icon: Share2,
-      title: "Share the link with another user",
-      description: "Send the link to anyone via chat, email, or any messaging app.",
+      title: "Share Anywhere",
+      description: "Send via chat, email, or scan with any device.",
     },
     {
       icon: Globe,
-      title: "Receiver opens and downloads",
-      description: "The receiver opens the link in their browser and downloads the file directly from your system.",
+      title: "Access Instantly",
+      description: "Recipients preview or download directly from your device.",
     },
   ];
 
@@ -316,22 +563,22 @@ function HowItWorks() {
     <section id="how-it-works" className="py-24 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             How It Works
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Five simple steps to start sharing files directly from your device
+            From install to sharing in under a minute. It's that simple.
           </p>
         </div>
         <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
           {steps.map((step, index) => (
-            <Card key={index} className="bg-card border-border hover-elevate transition-all duration-200" data-testid={`card-step-${index + 1}`}>
+            <Card key={index} className="bg-[#00080A] border-[#001C25] hover:border-primary/30 transition-all duration-200" data-testid={`card-step-${index + 1}`}>
               <CardContent className="p-6 text-center">
-                <div className="w-12 h-12 rounded-md bg-primary/10 flex items-center justify-center mb-4 mx-auto">
+                <div className="w-12 h-12 rounded-xl bg-primary/15 border border-primary/20 flex items-center justify-center mb-4 mx-auto">
                   <step.icon className="w-6 h-6 text-primary" />
                 </div>
                 <span className="text-3xl font-bold text-primary mb-2 block">{index + 1}</span>
-                <h3 className="text-base font-medium text-foreground mb-2">{step.title}</h3>
+                <h3 className="text-base font-semibold text-foreground mb-2">{step.title}</h3>
                 <p className="text-muted-foreground text-sm">{step.description}</p>
               </CardContent>
             </Card>
@@ -344,24 +591,24 @@ function HowItWorks() {
 
 function DesignPhilosophy() {
   const principles = [
-    "Technology should stay invisible to the user",
-    "The first successful file transfer matters most",
-    "File sharing should be fast and frictionless",
-    "Users should retain ownership and control of their data",
+    "Simple and intuitive. Upload, share, and access in seconds.",
+    "Built for speed. Transfer files at full LAN bandwidth.",
+    "Your data stays yours. No third party servers, no compromises.",
+    "Works everywhere. Access from any device on your network.",
   ];
 
   return (
-    <section className="py-24 px-6 bg-card/50">
+    <section className="py-24 px-6 bg-[#00080A]">
       <div className="max-w-4xl mx-auto text-center">
-        <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-8">
+        <div className="w-16 h-16 rounded-2xl bg-primary/15 border border-primary/20 flex items-center justify-center mx-auto mb-8">
           <Shield className="w-8 h-8 text-primary" />
         </div>
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6">
-          Our Design Philosophy
+        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
+          Built for Simplicity
         </h2>
         <div className="space-y-4 max-w-2xl mx-auto">
           {principles.map((principle, index) => (
-            <div key={index} className="flex items-center gap-3 text-left p-4 rounded-md border border-border/50">
+            <div key={index} className="flex items-center gap-3 text-left p-4 rounded-xl border border-[#001C25] bg-[#000405] hover:border-primary/30 transition-colors">
               <div className="w-2 h-2 rounded-full bg-primary shrink-0" />
               <p className="text-lg text-muted-foreground">{principle}</p>
             </div>
@@ -447,15 +694,15 @@ function FeedbackSection() {
     <section id="feedback" className="py-24 px-6">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
-            Let's Explore and Create Something Together
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Help Us Build the Future
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Your feedback, our expertise. Share your thoughts openly, no account needed, no strings attached.
+            Your feedback shapes JoinCloud. Share your thoughts and ideas with us. No account needed.
           </p>
         </div>
 
-        <Card className="bg-card border-border">
+        <Card className="bg-[#00080A] border-[#001C25]">
           <CardContent className="p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
@@ -468,7 +715,7 @@ function FeedbackSection() {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   rows={5}
-                  className="resize-none"
+                  className="resize-none bg-[#000405] border-[#001C25] focus:border-primary"
                   data-testid="input-feedback-message"
                   required
                 />
@@ -485,6 +732,7 @@ function FeedbackSection() {
                     placeholder="Your name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    className="bg-[#000405] border-[#001C25] focus:border-primary"
                     data-testid="input-feedback-name"
                   />
                 </div>
@@ -498,6 +746,7 @@ function FeedbackSection() {
                     placeholder="your@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    className="bg-[#000405] border-[#001C25] focus:border-primary"
                     data-testid="input-feedback-email"
                   />
                 </div>
@@ -506,7 +755,7 @@ function FeedbackSection() {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
                 disabled={!message.trim() || feedbackMutation.isPending}
                 data-testid="button-submit-feedback"
               >
@@ -602,10 +851,10 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
     <section id="waitlist" className="py-24 px-6" ref={waitlistRef as React.Ref<HTMLElement>}>
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-12">
-          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 rounded-2xl bg-primary/15 border border-primary/20 flex items-center justify-center mx-auto mb-6">
             <Bell className="w-8 h-8 text-primary" />
           </div>
-          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             Get Notified When Windows is Available
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
@@ -613,7 +862,7 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
           </p>
         </div>
 
-        <Card className="bg-card border-border">
+        <Card className="bg-[#00080A] border-[#001C25]">
           <CardContent className="p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
@@ -626,6 +875,7 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
                   placeholder="Your name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
+                  className="bg-[#000405] border-[#001C25] focus:border-primary"
                   data-testid="input-waitlist-name"
                   required
                 />
@@ -641,6 +891,7 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
                   placeholder="your@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  className="bg-[#000405] border-[#001C25] focus:border-primary"
                   data-testid="input-waitlist-email"
                   required
                 />
@@ -650,11 +901,11 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
                 <label htmlFor="waitlist-profession" className="block text-sm font-medium text-foreground mb-2">
                   Profession <span className="text-primary">*</span>
                 </label>
-                <Select value={profession} onValueChange={setProfession} >
-                  <SelectTrigger data-testid="select-waitlist-profession">
+                <Select value={profession} onValueChange={setProfession}>
+                  <SelectTrigger className="bg-[#000405] border-[#001C25]" data-testid="select-waitlist-profession">
                     <SelectValue placeholder="Select your profession" />
                   </SelectTrigger>
-                  <SelectContent className="bg-background">
+                  <SelectContent className="bg-[#00080A] border-[#001C25]">
                     <SelectItem value="Student">Student</SelectItem>
                     <SelectItem value="Creator">Creator</SelectItem>
                     <SelectItem value="Working Professional">Working Professional</SelectItem>
@@ -664,12 +915,10 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
                 </Select>
               </div>
 
-             
-
               <Button
                 type="submit"
                 size="lg"
-                className="w-full"
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
                 disabled={!name.trim() || !email.trim() || !profession || waitlistMutation.isPending}
                 data-testid="button-submit-waitlist"
               >
@@ -693,17 +942,17 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
 
 function DownloadSection({ onWindowsClick }: { onWindowsClick: () => void }) {
   return (
-    <section className="py-24 px-6 bg-card/50">
+    <section className="py-24 px-6 bg-[#00080A]">
       <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
-          Ready to take control of your files?
+        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+          Start Sharing in Seconds
         </h2>
         <p className="text-lg text-muted-foreground mb-10 max-w-2xl mx-auto">
-          Download JoinCloud and start sharing files directly from your device. Only you need to install it, receivers just use a browser link.
+          Download JoinCloud and turn your device into a personal cloud. Share files instantly with anyone on your network.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-          <Button size="lg" className="text-base px-10" onClick={onWindowsClick}  data-testid="button-download-cta-macos">
-            <div className="flex">
+          <Button size="lg" className="text-base px-10 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" onClick={onWindowsClick} data-testid="button-download-cta-macos">
+            <div className="flex items-center">
               <Download className="w-5 h-5 mr-2" />
               Download for macOS
             </div>
@@ -711,7 +960,7 @@ function DownloadSection({ onWindowsClick }: { onWindowsClick: () => void }) {
           <Button
             size="lg"
             variant="outline"
-            className="text-base px-10"
+            className="text-base px-10 border-[#001C25] hover:bg-[#00080A] hover:border-primary/50 text-foreground"
             data-testid="button-download-cta-windows"
             onClick={onWindowsClick}
           >
@@ -722,12 +971,12 @@ function DownloadSection({ onWindowsClick }: { onWindowsClick: () => void }) {
         <div className="flex items-center justify-center gap-4 text-sm">
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground">macOS</span>
-            <span className="text-amber-500">v0.3.1 Beta</span>
+            <span className="text-[#22C55E]">v0.3.4 Beta</span>
           </div>
           <span className="text-muted-foreground/50">&bull;</span>
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground">Windows</span>
-            <span className="text-amber-500">Coming Soon</span>
+            <span className="text-[#F59E0B]">Coming Soon</span>
           </div>
         </div>
       </div>
@@ -737,31 +986,31 @@ function DownloadSection({ onWindowsClick }: { onWindowsClick: () => void }) {
 
 function Footer() {
   return (
-    <footer className="py-12 px-6 bg-card border-t border-border">
+    <footer className="py-12 px-6 bg-[#000A0D] border-t border-[#001C25]">
       <div className="max-w-6xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <img src={joincloudLogo} alt="JoinCloud" className="h-6 w-auto object-contain" />
-            <span className="text-lg font-semibold text-foreground">JoinCloud</span>
+            <span className="text-lg font-bold text-foreground">JoinCloud</span>
           </div>
           <nav className="flex flex-wrap items-center justify-center gap-6 text-sm">
-          <a
+            <a
               href="/privacy"
-              className="text-muted-foreground hover:text-foreground transition-colors duration-150"
+              className="text-muted-foreground hover:text-primary transition-colors duration-150"
               data-testid="link-privacy"
             >
               Privacy Policy
             </a>
             <a
               href="/terms"
-              className="text-muted-foreground hover:text-foreground transition-colors duration-150"
+              className="text-muted-foreground hover:text-primary transition-colors duration-150"
               data-testid="link-terms"
             >
               Terms
             </a>
             <a
               href="#"
-              className="text-muted-foreground hover:text-foreground transition-colors duration-150"
+              className="text-muted-foreground hover:text-primary transition-colors duration-150"
               data-testid="link-support"
             >
               Support
@@ -791,12 +1040,14 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background grain-bg">
+      <MouseSpeedEffect />
       <Header onWindowsClick={handleWindowsClick}/>
       <main>
         <Hero onWindowsClick={handleWindowsClick} />
         <CoreBenefits />
         <Features />
+        <AppShowcase />
         <HowItWorks />
         <DesignPhilosophy />
         <FeedbackSection />
