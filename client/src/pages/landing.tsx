@@ -146,7 +146,9 @@ function MouseSpeedEffect() {
     </div>
   );
 }
-function Header({ onWindowsClick }: { onWindowsClick: () => void }) {
+const MAC_DOWNLOAD_URL = "https://github.com/vinay-kumar-shakyawar/joincloud/releases/download/v0.3.4/JoinCloud-0.3.4.dmg";
+
+function Header({ onMacClick, onWindowsClick }: { onMacClick: () => void; onWindowsClick: () => void }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -192,7 +194,7 @@ function Header({ onWindowsClick }: { onWindowsClick: () => void }) {
             Feedback
           </a>
         </nav>
-        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" data-testid="button-download-header" onClick={onWindowsClick}>
+        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" data-testid="button-download-header" onClick={onMacClick}>
           <Download className="w-4 h-4 mr-2" />
           Download Beta
         </Button>
@@ -201,7 +203,7 @@ function Header({ onWindowsClick }: { onWindowsClick: () => void }) {
   );
 }
 
-function Hero({ onWindowsClick }: { onWindowsClick: () => void }) {
+function Hero({ onMacClick, onWindowsClick }: { onMacClick: () => void; onWindowsClick: () => void }) {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 pb-16 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-radial from-primary/8 via-transparent to-transparent opacity-60" />
@@ -224,7 +226,7 @@ function Hero({ onWindowsClick }: { onWindowsClick: () => void }) {
           Only you need JoinCloud installed. Share via link or QR code. Recipients preview or download directly from their browser.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button size="lg" className="text-base px-10 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" onClick={onWindowsClick} data-testid="button-download-cta-macos">
+          <Button size="lg" className="text-base px-10 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" onClick={onMacClick} data-testid="button-download-cta-macos">
             <div className="flex items-center">
               <Download className="w-5 h-5 mr-2" />
               Download for macOS
@@ -940,7 +942,7 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
 }
 
 
-function DownloadSection({ onWindowsClick }: { onWindowsClick: () => void }) {
+function DownloadSection({ onMacClick, onWindowsClick }: { onMacClick: () => void; onWindowsClick: () => void }) {
   return (
     <section className="py-24 px-6 bg-[#00080A]">
       <div className="max-w-4xl mx-auto text-center">
@@ -951,7 +953,7 @@ function DownloadSection({ onWindowsClick }: { onWindowsClick: () => void }) {
           Download JoinCloud and turn your device into a personal cloud. Share files instantly with anyone on your network.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-          <Button size="lg" className="text-base px-10 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" onClick={onWindowsClick} data-testid="button-download-cta-macos">
+          <Button size="lg" className="text-base px-10 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" onClick={onMacClick} data-testid="button-download-cta-macos">
             <div className="flex items-center">
               <Download className="w-5 h-5 mr-2" />
               Download for macOS
@@ -1029,6 +1031,10 @@ export default function Landing() {
   const waitlistRef = useRef<HTMLDivElement | null>(null);
   const { toast } = useToast();
 
+  const handleMacClick = () => {
+    window.open(MAC_DOWNLOAD_URL, "_blank");
+  };
+
   const handleWindowsClick = () => {
     toast({
       title: "Coming Soon",
@@ -1042,9 +1048,9 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background grain-bg">
       <MouseSpeedEffect />
-      <Header onWindowsClick={handleWindowsClick}/>
+      <Header onMacClick={handleMacClick} onWindowsClick={handleWindowsClick}/>
       <main>
-        <Hero onWindowsClick={handleWindowsClick} />
+        <Hero onMacClick={handleMacClick} onWindowsClick={handleWindowsClick} />
         <CoreBenefits />
         <Features />
         <AppShowcase />
@@ -1052,7 +1058,7 @@ export default function Landing() {
         <DesignPhilosophy />
         <FeedbackSection />
         <WaitlistSection waitlistRef={waitlistRef} />
-        <DownloadSection onWindowsClick={handleWindowsClick} />
+        <DownloadSection onMacClick={handleMacClick} onWindowsClick={handleWindowsClick} />
       </main>
       <Footer />
     </div>
