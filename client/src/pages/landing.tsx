@@ -7,7 +7,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
-import { Download, Folder, Share2, Shield, Lock, Zap, HardDrive, Globe, Monitor, Send, CheckCircle, Clock, Sparkles, Link2, UserX, Wifi, Bell, Users, Smartphone, QrCode, FolderOpen, Eye, Mail, MessageCircle, Headphones } from "lucide-react";
+import { Download, Folder, Share2, Shield, Lock, Zap, HardDrive, Globe, Monitor, Send, CheckCircle, Clock, Sparkles, Link2, UserX, Wifi, Bell, Users, Smartphone, QrCode, FolderOpen, Eye, Mail, MessageCircle, Headphones, ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import joincloudLogo from "/joincloud-logo.png";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -146,9 +152,10 @@ function MouseSpeedEffect() {
     </div>
   );
 }
-const MAC_DOWNLOAD_URL = "https://github.com/vinay-kumar-shakyawar/joincloud/releases/download/v0.3.4/JoinCloud-0.3.4.dmg";
+const MAC_INTEL_DOWNLOAD_URL = "https://github.com/vinay-kumar-shakyawar/joincloud/releases/download/v0.3.4/JoinCloud-0.3.4.dmg";
+const MAC_ARM64_DOWNLOAD_URL = "https://github.com/vinay-kumar-shakyawar/joincloud/releases/download/v0.3.4/JoinCloud-0.3.4-arm64.dmg";
 
-function Header({ onMacClick, onWindowsClick }: { onMacClick: () => void; onWindowsClick: () => void }) {
+function Header({ onMacIntelClick, onMacArmClick, onWindowsClick }: { onMacIntelClick: () => void; onMacArmClick: () => void; onWindowsClick: () => void }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -194,16 +201,31 @@ function Header({ onMacClick, onWindowsClick }: { onMacClick: () => void; onWind
             Feedback
           </a>
         </nav>
-        <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" data-testid="button-download-header" onClick={onMacClick}>
-          <Download className="w-4 h-4 mr-2" />
-          Download Beta
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" data-testid="button-download-header">
+              <Download className="w-4 h-4 mr-2" />
+              Download Beta
+              <ChevronDown className="w-4 h-4 ml-2" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="bg-[#00080A] border-[#001C25]">
+            <DropdownMenuItem onClick={onMacArmClick} className="cursor-pointer">
+              <Download className="w-4 h-4 mr-2" />
+              macOS (Apple Silicon)
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={onMacIntelClick} className="cursor-pointer">
+              <Download className="w-4 h-4 mr-2" />
+              macOS (Intel)
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );
 }
 
-function Hero({ onMacClick, onWindowsClick }: { onMacClick: () => void; onWindowsClick: () => void }) {
+function Hero({ onMacIntelClick, onMacArmClick, onWindowsClick }: { onMacIntelClick: () => void; onMacArmClick: () => void; onWindowsClick: () => void }) {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-20 pb-16 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-radial from-primary/8 via-transparent to-transparent opacity-60" />
@@ -226,12 +248,25 @@ function Hero({ onMacClick, onWindowsClick }: { onMacClick: () => void; onWindow
           Only you need JoinCloud installed. Share via link or QR code. Recipients preview or download directly from their browser.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <Button size="lg" className="text-base px-10 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" onClick={onMacClick} data-testid="button-download-cta-macos">
-            <div className="flex items-center">
-              <Download className="w-5 h-5 mr-2" />
-              Download for macOS
-            </div>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="lg" className="text-base px-10 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" data-testid="button-download-cta-macos">
+                <Download className="w-5 h-5 mr-2" />
+                Download for macOS
+                <ChevronDown className="w-4 h-4 ml-2" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-[#00080A] border-[#001C25]">
+              <DropdownMenuItem onClick={onMacArmClick} className="cursor-pointer">
+                <Download className="w-4 h-4 mr-2" />
+                Apple Silicon (M1/M2/M3/M4)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onMacIntelClick} className="cursor-pointer">
+                <Download className="w-4 h-4 mr-2" />
+                Intel Mac
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button
             size="lg"
             variant="outline"
@@ -987,7 +1022,7 @@ function SupportSection() {
   );
 }
 
-function DownloadSection({ onMacClick, onWindowsClick }: { onMacClick: () => void; onWindowsClick: () => void }) {
+function DownloadSection({ onMacIntelClick, onMacArmClick, onWindowsClick }: { onMacIntelClick: () => void; onMacArmClick: () => void; onWindowsClick: () => void }) {
   return (
     <section className="py-24 px-6 bg-[#00080A]">
       <div className="max-w-4xl mx-auto text-center">
@@ -998,12 +1033,25 @@ function DownloadSection({ onMacClick, onWindowsClick }: { onMacClick: () => voi
           Download JoinCloud and turn your device into a personal cloud. Share files instantly with anyone on your network.
         </p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-          <Button size="lg" className="text-base px-10 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" onClick={onMacClick} data-testid="button-download-cta-macos">
-            <div className="flex items-center">
-              <Download className="w-5 h-5 mr-2" />
-              Download for macOS
-            </div>
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="lg" className="text-base px-10 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold" data-testid="button-download-cta-macos">
+                <Download className="w-5 h-5 mr-2" />
+                Download for macOS
+                <ChevronDown className="w-4 h-4 ml-2" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="bg-[#00080A] border-[#001C25]">
+              <DropdownMenuItem onClick={onMacArmClick} className="cursor-pointer">
+                <Download className="w-4 h-4 mr-2" />
+                Apple Silicon (M1/M2/M3/M4)
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={onMacIntelClick} className="cursor-pointer">
+                <Download className="w-4 h-4 mr-2" />
+                Intel Mac
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button
             size="lg"
             variant="outline"
@@ -1076,8 +1124,12 @@ export default function Landing() {
   const waitlistRef = useRef<HTMLDivElement | null>(null);
   const { toast } = useToast();
 
-  const handleMacClick = () => {
-    window.open(MAC_DOWNLOAD_URL, "_blank");
+  const handleMacIntelClick = () => {
+    window.open(MAC_INTEL_DOWNLOAD_URL, "_blank");
+  };
+
+  const handleMacArmClick = () => {
+    window.open(MAC_ARM64_DOWNLOAD_URL, "_blank");
   };
 
   const handleWindowsClick = () => {
@@ -1093,9 +1145,9 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-background grain-bg">
       <MouseSpeedEffect />
-      <Header onMacClick={handleMacClick} onWindowsClick={handleWindowsClick}/>
+      <Header onMacIntelClick={handleMacIntelClick} onMacArmClick={handleMacArmClick} onWindowsClick={handleWindowsClick}/>
       <main>
-        <Hero onMacClick={handleMacClick} onWindowsClick={handleWindowsClick} />
+        <Hero onMacIntelClick={handleMacIntelClick} onMacArmClick={handleMacArmClick} onWindowsClick={handleWindowsClick} />
         <CoreBenefits />
         <Features />
         <AppShowcase />
@@ -1104,7 +1156,7 @@ export default function Landing() {
         <FeedbackSection />
         <WaitlistSection waitlistRef={waitlistRef} />
         <SupportSection />
-        <DownloadSection onMacClick={handleMacClick} onWindowsClick={handleWindowsClick} />
+        <DownloadSection onMacIntelClick={handleMacIntelClick} onMacArmClick={handleMacArmClick} onWindowsClick={handleWindowsClick} />
       </main>
       <Footer />
     </div>
