@@ -4,15 +4,39 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
     <meta name="description" content="JoinCloud - Your personal cloud powered by your own device. Share files globally, directly from your system without uploading to third-party storage." />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://joincloud.in/" />
+
     <meta property="og:title" content="JoinCloud - Your Personal Cloud" />
     <meta property="og:description" content="Share files globally, directly from your own device. No third-party cloud storage needed." />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://joincloud.in/" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="JoinCloud - Your Personal Cloud" />
+    <meta name="twitter:description" content="Share files globally, directly from your own device. No third-party cloud storage needed." />
     <title>JoinCloud - Your Personal Cloud</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/joincloud-logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "JoinCloud",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Windows, macOS",
+        "description": "A personal cloud network that lets you share files directly from your system without uploading to third-party storage.",
+        "url": "https://joincloud.in/",
+        "publisher": {
+          "@type": "Organization",
+          "name": "JoinCloud"
+        }
+      }
+    </script>
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z20M26EL8G"></script>
@@ -25,6 +49,26 @@
     </script>
   </head>
   <body>
+    <!-- Static SEO fallback (removed after React mounts) -->
+    <div id="seo-fallback" style="padding:24px;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;max-width:960px;margin:0 auto;">
+      <h1 style="font-size:28px;line-height:1.2;margin:0 0 12px;">JoinCloud - Your Personal Cloud</h1>
+      <p style="margin:0 0 14px;opacity:.9;">
+        JoinCloud lets you share files directly from your system using a simple link — no third-party cloud uploads required.
+      </p>
+      <ul style="margin:0 0 14px;padding-left:18px;opacity:.9;">
+        <li>Sender-only installation — receivers download in a browser</li>
+        <li>Fast local transfers and global sharing</li>
+        <li>Full control: your files stay on your device</li>
+      </ul>
+      <p style="margin:0 0 10px;">
+        <a href="/privacy">Privacy Policy</a>
+        <span style="opacity:.6;"> · </span>
+        <a href="/terms">Terms of Service</a>
+      </p>
+      <noscript>
+        <p style="margin:0;opacity:.8;">JavaScript is required for the full experience.</p>
+      </noscript>
+    </div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
