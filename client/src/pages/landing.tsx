@@ -239,10 +239,13 @@ function Hero({ onMacIntelClick, onMacArmClick, onWindowsClick }: { onMacIntelCl
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6 tracking-tight">
           Your Personal Cloud.
           <br />
-          <span className="text-primary text-glow">Share Files at LAN Speed.</span>
+          <span className="text-primary text-glow">Your Data. Your Device.</span>
         </h1>
-        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-4">
-          Turn your device into a high speed file sharing hub. Create Team Spaces, preview 4K content instantly, and collaborate without cloud uploads.
+        <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-2">
+          Privacy-first file sharing cloud that keeps your data on your device not on servers.
+        </p>
+        <p className="text-sm text-muted-foreground/80 max-w-2xl mx-auto mb-4">
+          Built &amp; led by Vinay Shakyawar
         </p>
         <p className="text-base text-muted-foreground/70 max-w-xl mx-auto mb-10">
           Only you need JoinCloud installed. Share via link or QR code. Recipients preview or download directly from their browser.
