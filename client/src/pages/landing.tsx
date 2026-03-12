@@ -242,7 +242,7 @@ function Hero({ onMacIntelClick, onMacArmClick, onWindowsClick }: { onMacIntelCl
           <span className="text-primary text-glow">Your Data. Your Device.</span>
         </h1>
         <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-2">
-          Privacy-first file sharing cloud that keeps your data on your device not on servers.
+          Share files directly across devices and OS from your system, and save time on two-step sharing.
         </p>
         <p className="text-sm text-muted-foreground/80 max-w-2xl mx-auto mb-4">
           Built &amp; led by Vinay Shakyawar
@@ -315,18 +315,18 @@ function CoreBenefits() {
   const benefits = [
     {
       icon: Zap,
-      title: "Lightning Fast",
-      description: "Direct LAN transfers at maximum speed. No uploads, no waiting. Share files instantly.",
+      title: "Fast",
+      description: "Sharing files directly reduces friction and increases productivity across your devices.",
     },
     {
       icon: Shield,
-      title: "Completely Private",
-      description: "Your files never touch third party servers. Everything stays on your device.",
+      title: "Private",
+      description: "No one can access until you share, and your files never touch third party servers.",
     },
     {
       icon: HardDrive,
-      title: "Total Control",
-      description: "Manage your files, choose what to share, and revoke access anytime.",
+      title: "Easy",
+      description: "Manage your files in one place, choose what to share, and revoke access anytime.",
     },
   ];
 
@@ -335,10 +335,10 @@ function CoreBenefits() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            What is JoinCloud?
+            Save time with JoinCloud
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            JoinCloud transforms your device into a personal cloud. Share files at full LAN speed, collaborate with your team, and preview high resolution content directly in the browser. No uploads. No waiting.
+            JoinCloud uses storage space on your device as a local personal cloud. Share or manage files in a single place under your control, collaborate with your team, and preview images and videos on the go before downloading.
           </p>
         </div>
         <div className="grid md:grid-cols-3 gap-6">
@@ -363,12 +363,12 @@ function Features() {
   const availableFeatures = [
     {
       icon: Users,
-      title: "Team Space Collaboration",
-      description: "Create a shared workspace with nearby JoinCloud users. Share file links instantly and collaborate in real time with your team.",
+      title: "Team Collaboration",
+      description: "Shared workspace with nearby JoinCloud users, with quick chat-based discussion on project files.",
     },
     {
       icon: Eye,
-      title: "4K Preview Without Download",
+      title: "4K Preview",
       description: "Share high resolution files up to 4K and let recipients preview them directly in their browser. No download required.",
     },
     {
@@ -382,11 +382,6 @@ function Features() {
       description: "Organize, upload, and manage all your files directly within JoinCloud. Keep your cloud storage clean and structured.",
     },
     {
-      icon: QrCode,
-      title: "QR Code Sharing",
-      description: "Generate QR codes for instant access to files or your entire cloud. Perfect for quick sharing with nearby devices.",
-    },
-    {
       icon: Link2,
       title: "One Click Link Sharing",
       description: "Generate shareable links for any file or folder. Recipients can view or download instantly through their browser.",
@@ -394,17 +389,22 @@ function Features() {
     {
       icon: UserX,
       title: "No Signup Required",
-      description: "Download and start using immediately. Free trial with no limits and no credit card required.",
+      description: "Download and start using immediately. Free trial, no credit card required.",
     },
     {
       icon: Wifi,
-      title: "High Speed LAN Transfers",
-      description: "Optimized for local network performance. Transfer large files at maximum speed without internet dependency.",
+      title: "Fast Turnaround",
+      description: "Optimized for local network performance. Transfer large files peer to peer without uploading to the cloud or external drives.",
     },
     {
       icon: Lock,
       title: "Private and Secure",
-      description: "Your files never leave your device. Share only what you choose, when you choose, with complete control.",
+      description: "Your files never touch third party servers. Only added files in JoinCloud can be shared with others, and system files stay isolated from JoinCloud.",
+    },
+    {
+      icon: HardDrive,
+      title: "No Limits on File Size",
+      description: "Share files without worrying about file size limits when using your local storage.",
     },
   ];
 
@@ -412,12 +412,12 @@ function Features() {
     {
       icon: Globe,
       title: "Global Sharing",
-      description: "Share files with anyone, anywhere in the world. Access your cloud beyond your local network.",
+      description: "Share files directly with anyone, anywhere in the world, without having to upload them to a cloud server.",
     },
     {
       icon: Monitor,
       title: "Remote Cloud Access",
-      description: "Control your personal cloud from any browser, anywhere. Full access to your files from any location.",
+      description: "Control your personal cloud from any browser, anywhere. Access and manage your files remotely.",
     },
   ];
 
@@ -426,10 +426,10 @@ function Features() {
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            v0.3.4 Features
+            v0.3.4 Beta Features
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Powerful tools for seamless file sharing and team collaboration
+            We care about your privacy and time, and we are happy to share that we are launching soon.
           </p>
         </div>
 
@@ -513,7 +513,7 @@ function AppShowcase() {
       image: "/screenshot-network.png",
       title: "Network Discovery",
       subtitle: "Connect Seamlessly",
-      description: "Automatically discover nearby JoinCloud users on your network. Connect manually via IP address or let mDNS find peers for you. See all connected devices at a glance.",
+      description: "Discover nearby JoinCloud users on your network. See all connected users at a glance.",
     },
   ];
 
@@ -575,16 +575,16 @@ function HowItWorks() {
     {
       icon: Download,
       title: "Install JoinCloud",
-      description: "Download and launch in seconds. Only you need the app installed.",
+      description: "Download and launch in seconds.",
     },
     {
       icon: Folder,
       title: "Choose Your Files",
-      description: "Select any file or folder. Your data stays on your device.",
+      description: "Select any file and upload it to your JoinCloud.",
     },
     {
       icon: Link2,
-      title: "Get Your Link",
+      title: "Create Share",
       description: "Instantly generate a shareable link or QR code.",
     },
     {
@@ -595,7 +595,7 @@ function HowItWorks() {
     {
       icon: Globe,
       title: "Access Instantly",
-      description: "Recipients preview or download directly from your device.",
+      description: "Open the link on any device to preview and download files.",
     },
   ];
 
@@ -607,7 +607,7 @@ function HowItWorks() {
             How It Works
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            From install to sharing in under a minute. It's that simple.
+            From install to sharing, easy and simple. No tech complexity. Made for you.
           </p>
         </div>
         <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
@@ -631,10 +631,11 @@ function HowItWorks() {
 
 function DesignPhilosophy() {
   const principles = [
-    "Simple and intuitive. Upload, share, and access in seconds.",
-    "Built for speed. Transfer files at full LAN bandwidth.",
-    "Your data stays yours. No third party servers, no compromises.",
-    "Works everywhere. Access from any device on your network.",
+    "Video editors who share large files between devices like laptops, PCs, mobiles, or tablets.",
+    "Creators and production houses who frequently move large media files between systems.",
+    "Anyone building a home cloud network to bring all their files into one place.",
+    "Research and privacy-conscious organizations that want to avoid cloud servers and keep data local.",
+    "People who prefer to preview photos and videos before downloading them to save time and storage.",
   ];
 
   return (
@@ -644,7 +645,7 @@ function DesignPhilosophy() {
           <Shield className="w-8 h-8 text-primary" />
         </div>
         <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">
-          Built for Simplicity
+          Who can use JoinCloud?
         </h2>
         <div className="space-y-4 max-w-2xl mx-auto">
           {principles.map((principle, index) => (
@@ -660,160 +661,8 @@ function DesignPhilosophy() {
 }
 
 function FeedbackSection() {
-  const [message, setMessage] = useState("");
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState<string | undefined>();
-  const { toast } = useToast();
-
-  const feedbackMutation = useMutation({
-    mutationFn: async (data: { message: string; name?: string; email?: string; phone?: string }) => {
-      const additionalDetails: Record<string, any> = {
-        feedback: data.message
-      };
-      
-      if (data.phone) {
-        additionalDetails.phone = data.phone;
-      }
-
-      const payload = {
-        name: data.name || "Anonymous",
-        email: {
-          primaryEmail: data.email || "no-email@feedback.local",
-          additionalEmails: null
-        },
-        websiteSource: ["JOINCLOUD_IN"],
-        additionalDetails
-      };
-
-      const response = await fetch("https://twenty.joincloud.in/rest/webformleads", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${import.meta.env.VITE_TWENTY_API_TOKEN}`
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to submit feedback");
-      }
-      return response.json();
-    },
-    onSuccess: () => {
-      toast({
-        title: "Thank you!",
-        description: "Your feedback has been submitted. We appreciate your input!",
-      });
-      setMessage("");
-      setName("");
-      setEmail("");
-      setPhone(undefined);
-    },
-    onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to submit feedback. Please try again.",
-        variant: "destructive",
-      });
-    },
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!message.trim()) return;
-    feedbackMutation.mutate({
-      message: message.trim(),
-      name: name.trim() || undefined,
-      email: email.trim() || undefined,
-      phone: phone || undefined,
-    });
-  };
-
-  return (
-    <section id="feedback" className="py-24 px-6">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Help Us Build the Future
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            Your feedback shapes JoinCloud. Share your thoughts and ideas with us. No account needed.
-          </p>
-        </div>
-
-        <Card className="bg-[#00080A] border-[#001C25]">
-          <CardContent className="p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="feedback-message" className="block text-sm font-medium text-foreground mb-2">
-                  Your Feedback <span className="text-primary">*</span>
-                </label>
-                <Textarea
-                  id="feedback-message"
-                  placeholder="Share your ideas, suggestions, or thoughts with us..."
-                  value={message}
-                  onChange={(e) => setMessage(e.target.value)}
-                  rows={5}
-                  className="resize-none bg-[#000405] border-[#001C25] focus:border-primary"
-                  data-testid="input-feedback-message"
-                  required
-                />
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="feedback-name" className="block text-sm font-medium text-muted-foreground mb-2">
-                    Name <span className="text-muted-foreground/50">(optional)</span>
-                  </label>
-                  <Input
-                    id="feedback-name"
-                    type="text"
-                    placeholder="Your name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="bg-[#000405] border-[#001C25] focus:border-primary"
-                    data-testid="input-feedback-name"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="feedback-email" className="block text-sm font-medium text-muted-foreground mb-2">
-                    Email <span className="text-muted-foreground/50">(optional)</span>
-                  </label>
-                  <Input
-                    id="feedback-email"
-                    type="email"
-                    placeholder="your@email.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="bg-[#000405] border-[#001C25] focus:border-primary"
-                    data-testid="input-feedback-email"
-                  />
-                </div>
-              </div>
-
-              <Button
-                type="submit"
-                size="lg"
-                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
-                disabled={!message.trim() || feedbackMutation.isPending}
-                data-testid="button-submit-feedback"
-              >
-                {feedbackMutation.isPending ? (
-                  "Sending..."
-                ) : (
-                  <>
-                    <Send className="w-4 h-4 mr-2" />
-                    Send Feedback
-                  </>
-                )}
-              </Button>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    </section>
-  );
+  // Form section hidden; using direct contact methods instead.
+  return null;
 }
 
 function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDivElement | null> }) {
@@ -895,10 +744,10 @@ function WaitlistSection({ waitlistRef }: { waitlistRef: React.RefObject<HTMLDiv
             <Bell className="w-8 h-8 text-primary" />
           </div>
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Get Notified When Windows is Available
+            Be the First to JoinCloud
           </h2>
           <p className="text-lg text-muted-foreground max-w-xl mx-auto">
-            JoinCloud for Windows is coming soon. Join the waitlist and be the first to know when it launches.
+            Join the waitlist and we&apos;ll email exclusive offers and product updates before the launch.
           </p>
         </div>
 
@@ -1156,8 +1005,9 @@ export default function Landing() {
         <AppShowcase />
         <HowItWorks />
         <DesignPhilosophy />
-        <FeedbackSection />
-        <WaitlistSection waitlistRef={waitlistRef} />
+        {/* Feedback and waitlist forms temporarily hidden */}
+        {/* <FeedbackSection /> */}
+        {/* <WaitlistSection waitlistRef={waitlistRef} /> */}
         <SupportSection />
         <DownloadSection onMacIntelClick={handleMacIntelClick} onMacArmClick={handleMacArmClick} onWindowsClick={handleWindowsClick} />
       </main>
